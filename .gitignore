@@ -1,3 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Flask / local database
+instance/
+*.db
+*.sqlite
+*.sqlite3
+
+# TypeScript / Node
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
