@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Discover Events | Campus Connect{% endblock %}
+
+{% block content %}
+<section class="welcome">
+    <h2>Discover Campus Events</h2>
+    <p>Find club meetings, social activities, academic events, and more.</p>
+</section>
+
+<section class="event-filters">
+    <label for="search">Search events</label>
+    <input
+        type="search"
+        id="search"
+        placeholder="Search by event name..."
+    >
+
+    <label for="category">Category</label>
+    <select id="category">
+        <option value="">All categories</option>
+        <option value="Academic">Academic</option>
+        <option value="Arts">Arts</option>
+        <option value="Music">Music</option>
+        <option value="Career">Career</option>
+        <option value="Social">Social</option>
+    </select>
+</section>
+
+<section class="map-section">
+    <h2>Explore the Map</h2>
+    <div id="map"></div>
+</section>
+
+<section id="event-list" class="event-list">
+    <h2>Upcoming Events</h2>
+    <p>Events will appear here as we connect the database.</p>
+</section>
+{% endblock %}
