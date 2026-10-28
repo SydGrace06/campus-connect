@@ -14,6 +14,10 @@ from collections.abc import Sequence
 from pathlib import Path
 from enum import Enum
 
+# update for our forms:
+# from forms import AuthorForm, BookForm
+# from models import db, Author, Book
+
 app = Flask(__name__)
 
 register_event_routes(app)
