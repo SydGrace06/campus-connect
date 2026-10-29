@@ -13,3 +13,5 @@ class CampusLocation(db.Model):
     name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     latitude: Mapped[float] = mapped_column(Float, nullable=False)
     longitude: Mapped[float] = mapped_column(Float, nullable=False)
+
+# when you add the event model, it will likely need a foreign key to campus_locations.id, so each event can reference a building instead of storing its own coordinates

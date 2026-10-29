@@ -5,33 +5,33 @@
 const campusLocations = {
     "breen-student-union": {
         name: "Breen Student Union (STU)",
-        latitude: 41.1561,
-        longitude: -80.0800
+        latitude: 41.154852,
+        longitude: -80.077983
     },
     "buhl-library": {
-        name: "Henry Buhl Library",
-        latitude: 41.1565,
-        longitude: -80.0795
+        "name": "Henry Buhl Library",
+        "latitude": 41.154125,
+        "longitude": -80.079378
     },
     "map-north": {
-        name: "MAP North Hall",
-        latitude: 41.1568,
-        longitude: -80.0804
+        "name": "MAP North Hall",
+        "latitude": 41.157150,
+        "longitude": -80.079335
     },
     "map-south": {
-        name: "MAP South Hall",
-        latitude: 41.1558,
-        longitude: -80.0803
+        "name": "MAP South Hall",
+        "latitude": 41.156387,
+        "longitude": -80.079882
     },
     "hicks-hall": {
-        name: "Hicks Hall",
-        latitude: 41.1556,
-        longitude: -80.0797
+        "name": "Hicks Hall",
+        "latitude": 41.153358,
+        "longitude": -80.078439
     },
     "ketler-hall": {
-        name: "Isaac C. Ketler Hall",
-        latitude: 41.1563,
-        longitude: -80.0806
+        "name": "Ketler Hall",
+        "latitude": 41.155454,
+        "longitude": -80.080569
     }
 };
 // Dummy events point to a location ID rather than storing coordinates.
