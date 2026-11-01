@@ -1,4 +1,5 @@
 /// <reference types="leaflet" />
+/// <reference path="./filters.ts" />
 
 // Grove City College location directory.
 // Coordinates are approximate demo positions; verify before final use.
@@ -36,7 +37,7 @@ const campusLocations = {
 };
 
 // Dummy events point to a location ID rather than storing coordinates.
-const dummyEvents = [
+const dummyEvents: CampusEvent[] = [
     {
         title: "Coding Club Meetup",
         category: "Academic",
@@ -101,13 +102,18 @@ if (mapElement) {
 
     function updateMapMarkers(): void {
         const searchInput =
-            document.getElementById("search") as HTMLInputElement;
+            document.getElementById("search") as HTMLInputElement | null;
 
         const categoryInput =
-            document.getElementById("category") as HTMLSelectElement;
+            document.getElementById("category") as HTMLSelectElement | null;
 
         const dateInput =
-            document.getElementById("date-range") as HTMLSelectElement;
+            document.getElementById("date-range") as HTMLSelectElement | null;
+
+        if (!searchInput || !categoryInput || !dateInput) {
+            console.error("One or more filter controls are missing.");
+            return;
+        }
 
         const filteredEvents = filterEvents(
             dummyEvents,

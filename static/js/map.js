@@ -1,5 +1,6 @@
 "use strict";
 /// <reference types="leaflet" />
+/// <reference path="./filters.ts" />
 // Grove City College location directory.
 // Coordinates are approximate demo positions; verify before final use.
 const campusLocations = {
@@ -74,7 +75,7 @@ const dummyEvents = [
     {
         title: "Art Club Social",
         category: "Arts",
-        date: "2026-11-07",
+        date: "2026-11-14",
         time: "2:00 PM",
         locationId: "map-south"
     }
@@ -88,17 +89,37 @@ if (mapElement) {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">' +
             'OpenStreetMap</a> contributors'
     }).addTo(map);
-    dummyEvents.forEach((event) => {
-        const location = campusLocations[event.locationId];
-        if (!location) {
+    const markerLayer = L.layerGroup().addTo(map);
+    function updateMapMarkers() {
+        const searchInput = document.getElementById("search");
+        const categoryInput = document.getElementById("category");
+        const dateInput = document.getElementById("date-range");
+        if (!searchInput || !categoryInput || !dateInput) {
+            console.error("One or more filter controls are missing.");
             return;
         }
-        L.marker([location.latitude, location.longitude])
-            .addTo(map)
-            .bindPopup(`<strong>${event.title}</strong><br>` +
-            `Category: ${event.category}<br>` +
-            `Date: ${event.date}<br>` +
-            `Time: ${event.time}<br>` +
-            `Location: ${location.name}`);
-    });
+        const filteredEvents = filterEvents(dummyEvents, searchInput.value, categoryInput.value, dateInput.value);
+        // Remove the old markers.
+        markerLayer.clearLayers();
+        // Add markers for the filtered events.
+        filteredEvents.forEach((event) => {
+            const location = campusLocations[event.locationId];
+            if (!location) {
+                return;
+            }
+            L.marker([location.latitude, location.longitude])
+                .addTo(markerLayer)
+                .bindPopup(`<strong>${event.title}</strong><br>` +
+                `Category: ${event.category}<br>` +
+                `Date: ${event.date}<br>` +
+                `Time: ${event.time}<br>` +
+                `Location: ${location.name}`);
+        });
+    }
+    // Update markers when the user changes a filter.
+    document.getElementById("search")?.addEventListener("input", updateMapMarkers);
+    document.getElementById("category")?.addEventListener("change", updateMapMarkers);
+    document.getElementById("date-range")?.addEventListener("change", updateMapMarkers);
+    // Display all events when the page first loads.
+    updateMapMarkers();
 }
