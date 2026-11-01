@@ -79,6 +79,20 @@ const dummyEvents: CampusEvent[] = [
         date: "2026-11-14",
         time: "2:00 PM",
         locationId: "map-south"
+    },
+    {
+        title: "Phi Sigma Chi Popcorn Party",
+        category: "Social",
+        date: "2026-10-31",
+        time: "6:00 PM",
+        locationId: "map-south"
+    },
+    {
+        title: "All Campus Worship",
+        category: "Social",
+        date: "2026-11-01",
+        time: "9:00 AM",
+        locationId: "breen-student-union"
     }
 ];
 
@@ -87,7 +101,7 @@ const mapElement = document.getElementById("map");
 if (mapElement) {
     // Center the map around Grove City College.
     const map = L.map(mapElement).setView(
-        [41.1568, -80.0859], 17
+        [41.155353, -80.079024], 17
     );
 
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
