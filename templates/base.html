@@ -29,6 +29,7 @@
 
     <!-- Load Leaflet before our map code -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='js/filters.js') }}"></script>
     <script src="{{ url_for('static', filename='js/map.js') }}"></script>
 
     {% block scripts %}{% endblock %}
