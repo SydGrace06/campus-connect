@@ -27,7 +27,7 @@ CAMPUS_LOCATIONS = [
     {
         "name": "MEP Hall",
         "latitude": 41.156561,
-        "longitude": 80.078589
+        "longitude": -80.078589
     },
     {
         "name": "Harker Hall",
