@@ -1,0 +1,1 @@
+# contains routes for club organizers to manage their clubs
