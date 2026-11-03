@@ -10,18 +10,18 @@ db = SQLAlchemy()
 
 class OrgType(SQLEnum):
     ACADEMIC_PROFESSIONAL_ORGS  = 'Academic/Professional'
-    ARTS_ORGS      = 'Arts'
-    POLY_ORGS       = 'Political'
-    PUBLICATION_ORGS       = 'Publications'
-    SERVICE_ORGS = 'Service'
-    SPECIAL_INTEREST_ORGS = 'Special Interest'
-    RECREATION_ORGS = 'Recreation'
-    GREEK_LIFE_HOUSING_ORGS = 'Greek Life/Housing Groups'
-    MINISTRY_ORGS = 'Ministry'
-    HONORARIES_ORGS = 'Honoraries'
-    MUSICAL_ORGS = 'Music'
-    IM_SPORT_ORGS = 'IM Sports'
-    CLUB_SPORT_ORGS = 'Club Sports'
+    ARTS_ORGS                   = 'Arts'
+    POLY_ORGS                   = 'Political'
+    PUBLICATION_ORGS            = 'Publications'
+    SERVICE_ORGS                = 'Service'
+    SPECIAL_INTEREST_ORGS       = 'Special Interest'
+    RECREATION_ORGS             = 'Recreation'
+    GREEK_LIFE_HOUSING_ORGS     = 'Greek Life/Housing Groups'
+    MINISTRY_ORGS               = 'Ministry'
+    HONORARIES_ORGS             = 'Honoraries'
+    MUSICAL_ORGS                = 'Music'
+    IM_SPORT_ORGS               = 'IM Sports'
+    CLUB_SPORT_ORGS             = 'Club Sports'
 
 
 
@@ -34,7 +34,7 @@ class CampusLocation(db.Model):
     longitude: Mapped[float] = mapped_column(Float, nullable=False)
 
 class Event(db.Model):
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(String(128))
     category: Mapped[str] = mapped_column(String(32))
     date: Mapped[datetime] = mapped_column(datetime)
@@ -42,22 +42,40 @@ class Event(db.Model):
     locationId: Mapped[int] = mapped_column(Integer, db.ForeignKey('campus_locations.id'))
 
 class Club(db.Model):
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     club_name: Mapped[str] = mapped_column(String(128))
-    abrev: Mapped[str] = mapped_column(String(15))
+    abrev: Mapped[str] = mapped_column(String(15), nullable=True)
     org_type: Mapped[OrgType] = mapped_column(SQLEnum(OrgType))
     advisor_name: Mapped[str] = mapped_column(String(32))
     president_name: Mapped[str] = mapped_column(String(32))
+    #description: Mapped[str] = mapped_column(String(256))
 
 
 class Account(db.Model):
-    username: Mapped[str] = mapped_column(String(32))
-    pass
+    username: Mapped[str] = mapped_column(String(32), primary_key=True)
+    handle: Mapped[str] = mapped_column(String(15), nullable=True)
+    password: Mapped[str] = mapped_column(String(32))
 
 class Favorite(db.Model):
     pass
 
 class Registration(db.Model):
     pass
+
+
+multiple_instances: tuple[Club,...] = (
+            Club(club_name="Women for Computer Science", abrev="WFCS", org_type=OrgType.ACADEMIC_PROFESSIONAL_ORGS, advisor_name="Dr. Jonathan Hutchins", president_name="Wynonna Roberts"),
+            Club(club_name="Swing Dance Club", org_type=OrgType.ARTS_ORGS, advisor_name="Dr. Erik Bardy", president_name="Sarah Smith"),
+            Club(club_name="Turning Point USA at Grove City College", org_type=OrgType.POLY_ORGS, advisor_name="Keith Graybill", president_name="Moira Donovan"),
+            Club(club_name="The Collegian", org_type=OrgType.PUBLICATION_ORGS, advisor_name="Mr. Nick Hildebrand", president_name="Emily Fox"),
+            Club(club_name="Association for Women Students", abrev="AWS", org_type=OrgType.SERVICE_ORGS, advisor_name="Hannah Kincer", president_name="Mary God"),
+            Club(club_name="Chess Club", org_type=OrgType.SPECIAL_INTEREST_ORGS, advisor_name="Timothy Sweet", president_name="Quinn MacKenzie"),
+            Club(club_name="Outing Club", org_type=OrgType.RECREATION_ORGS, advisor_name="Dr. Devin Stauff", president_name="Connor Stoltzfus"),
+            Club(club_name="Delta Rho Sigma", abrev="Buffaloes", org_type=OrgType.GREEK_LIFE_HOUSING_ORGS, advisor_name="Dr. Kevin Shaw", president_name="Sam Mayfield"),
+            Club(club_name="Hymn Sing", org_type=OrgType.MINISTRY_ORGS, advisor_name="Dr. Paul Munson", president_name="June Lee"),
+            Club(club_name="Women's Field Hockey", org_type=OrgType.CLUB_SPORT_ORGS, advisor_name="Mrs. Tori Wright", president_name="Bayleigh Miller")
+        )
+
+db.session.add_all(multiple_instances)
 
 # when you add the event model, it will likely need a foreign key to campus_locations.id, so each event can reference a building instead of storing its own coordinates
