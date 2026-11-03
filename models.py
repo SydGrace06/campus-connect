@@ -16,7 +16,13 @@ class OrgType(SQLEnum):
     SERVICE_ORGS = 'Service'
     SPECIAL_INTEREST_ORGS = 'Special Interest'
     RECREATION_ORGS = 'Recreation'
-    GREEK_LIFE_HOUSING = 'Greek Life/Housing Groups'
+    GREEK_LIFE_HOUSING_ORGS = 'Greek Life/Housing Groups'
+    MINISTRY_ORGS = 'Ministry'
+    HONORARIES_ORGS = 'Honoraries'
+    MUSICAL_ORGS = 'Music'
+    IM_SPORT_ORGS = 'IM Sports'
+    CLUB_SPORT_ORGS = 'Club Sports'
+
 
 
 class CampusLocation(db.Model):
@@ -38,6 +44,7 @@ class Event(db.Model):
 class Club(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     club_name: Mapped[str] = mapped_column(String(128))
+    abrev: Mapped[str] = mapped_column(String(15))
     org_type: Mapped[OrgType] = mapped_column(SQLEnum(OrgType))
     advisor_name: Mapped[str] = mapped_column(String(32))
     president_name: Mapped[str] = mapped_column(String(32))
