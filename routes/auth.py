@@ -1,24 +1,26 @@
 from __future__ import annotations
 
 from pathlib import Path
-import sys
 from typing import cast
 
-#Import cryptography and hash
 from cryptography.fernet import Fernet
 from pwdlib import PasswordHash
-from pwdlib.hashers.bcrypt import BcryptHasher
 from pwdlib.hashers.argon2 import Argon2Hasher
 
-#Flask imports
-from flask import Flask, render_template, url_for, redirect
+from flask import Blueprint, render_template, url_for, redirect
 from flask import request, flash
+
 from flask_login import (
-    LoginManager, login_required, login_user, logout_user, current_user
+    login_required, login_user, logout_user
 )
-from flask_sqlalchemy import SQLAlchemy
+
 from sqlalchemy.exc import IntegrityError
+
 from forms import RegisterForm, LoginForm
+from extensions import login_manager, db
+from models import User
+
+auth = Blueprint('auth', __name__)
 
 scriptdir: Path = Path(__name__).resolve().parent
 
@@ -60,27 +62,6 @@ with open(pepfile, 'rb') as fin:
 
 pwd_hasher = UpdatedHasher(pepper_key)
 
-# Configure the Flask Application
-app = Flask(__name__)
-
-#TODO : Ensure this is in the correct location
-# NOTE: in a practical solution, this would be in an .appenv file as shown
-app.config['SECRET_KEY'] = 'correcthorsebatterystaple'
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{dbfile}"
-
-
-db = SQLAlchemy(app)
-
-from models import User
-
-# Prepare and connect the LoginManager to this app
-login_manager = LoginManager()
-login_manager.init_app(app)
-
-# function name of the route that has the login form (so it can redirect users)
-login_manager.login_view = 'get_login' # type: ignore
-login_manager.session_protection = "strong"
-
 # function that takes a user id and as a string and returns that user
 @login_manager.user_loader
 def load_user(uid: str) -> User|None:
@@ -94,24 +75,15 @@ def get_user(uid: int|None = None, email: str|None = None) -> User|None:
         return db.session.scalar(db.select(User).filter_by(email=email))
 
 ###############################################################################
-# Database Setup
-###############################################################################
-
-# remember that all database operations must occur within an app context
-with app.app_context():
-    # this is only needed if the database doesn't already exist
-    db.create_all()
-
-###############################################################################
 # Route Handlers
 ###############################################################################
 
-@app.get('/register/')
+@auth.get('/register/')
 def get_register():
     form = RegisterForm()
     return render_template('register.html', form=form)
 
-@app.post('/register/')
+@auth.post('/register/')
 def post_register():
     form = RegisterForm()
     if form.validate():
@@ -139,12 +111,12 @@ def post_register():
     form.confirm_password.data = ""
     return render_template('register.html', form=form), 422
 
-@app.get('/login/')
+@auth.get('/login/')
 def get_login():
     form = LoginForm()
     return render_template('login.html', form=form)
 
-@app.post('/login/')
+@auth.post('/login/')
 def post_login():
     form = LoginForm()
     if form.validate():
@@ -157,7 +129,7 @@ def post_login():
             # redirect the user to the page they wanted or the home page
             next = request.args.get('next')
             if next is None or not next.startswith('/'):
-                next = url_for('index')
+                next = url_for('home')
             return redirect(next)
         # if the user does not exist or the password is incorrect
         else:
@@ -174,11 +146,11 @@ def post_login():
     form.password.data = ""
     return render_template('login.html', form=form), 422
 
-@app.get('/')
+@auth.get('/')
 def index():
     return render_template('home.html')
 
-@app.get('/logout/')
+@auth.get('/logout/')
 @login_required
 def get_logout():
     logout_user()

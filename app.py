@@ -15,17 +15,47 @@ from collections.abc import Sequence
 from pathlib import Path
 from enum import Enum
 
-# update for our forms:
-# from forms import AuthorForm, BookForm
-# from models import db, Author, Book
+from flask_login import login_required
+
+from extensions import db, login_manager
+
 
 app = Flask(__name__)
+
+# Application configuration
+scriptdir = Path(__file__).resolve().parent
+dbfile = scriptdir / "users.db"
+
+app.config['SECRET_KEY'] = 'batteryhorsestapler'
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{dbfile}"
+
+# Initialize extensions
+db.init_app(app)
+
+login_manager.init_app(app)
+login_manager.login_view = 'auth.get_login'
+login_manager.session_protection = 'strong'
+
+# Register authentication routes
+from routes.auth import auth
+app.register_blueprint(auth)
+
+# Register event routes
+from routes.events import register_event_routes
+register_event_routes(app)
 
 register_event_routes(app)
 
 @app.route("/")
+@login_required
 def home():
     return render_template("index.html")
+
+from models import User
+
+with app.app_context():
+    db.create_all()
+
 
 if __name__ == "__main__":
     app.run(debug=True)
