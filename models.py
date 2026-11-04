@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from pathlib import Path
+#from pathlib import Path
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy import String, Integer, ForeignKey, CHAR, Float, Date, Time
@@ -60,7 +61,7 @@ class Event(db.Model):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(String(128))
-    category: Mapped[str] = mapped_column(String(32))
+    category: Mapped[EventCategory] = mapped_column(SQLEnum(EventCategory))
     date: Mapped[Date] = mapped_column(Date)
     time: Mapped[Time] = mapped_column(Time)
     locationId: Mapped[int] = mapped_column(Integer, db.ForeignKey('campus_locations.id'))
@@ -136,19 +137,13 @@ db.session.add_all(club_instances)
 
 event_instances: tuple[Event, ...] = (
 
-    #Event(title="", category)
-
 )
-
-
-
 db.session.add_all(event_instances)
 
 
 account_instances: tuple[Event, ...] = (
 
 )
-
 db.session.add_all(account_instances)
 
 # when you add the event model, it will likely need a foreign key to campus_locations.id, so each event can reference a building instead of storing its own coordinates
