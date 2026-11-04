@@ -1,10 +1,20 @@
 from __future__ import annotations
 
-from datetime import datetime
+from pathlib import Path
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy import String, Integer, ForeignKey, CHAR, Float, Date, Time
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+# identify the full path to the database file
+#scriptdir: Path = Path(__file__).resolve().parent
+#dbfile: Path = scriptdir / 'orgs.db'
+
+# configure this web application
+#app = Flask(__name__)
+#app.config['SECRET_KEY'] = "correcthorsebatterystaple"
+#app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{dbfile}"
+
 
 db = SQLAlchemy()
 
@@ -23,6 +33,17 @@ class OrgType(SQLEnum):
     IM_SPORT_ORGS               = 'IM Sports'
     CLUB_SPORT_ORGS             = 'Club Sports'
 
+class EventCategory(SQLEnum):
+    ACADEMIC_PROFESSIONAL  = 'Academic/Professional'
+    REGULAR                = 'Regular'
+    SOCIAL                 = 'Social'
+    SERVICE                = 'Service'
+    FUNDRAISING            = 'Fundraising'
+    COMPETITION            = 'Competition'
+    ARTS                   = 'Arts'
+    MINISTRY               = 'Ministry'
+    OTHER                  = 'Other'
+
 
 
 class CampusLocation(db.Model):
@@ -32,6 +53,7 @@ class CampusLocation(db.Model):
     name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     latitude: Mapped[float] = mapped_column(Float, nullable=False)
     longitude: Mapped[float] = mapped_column(Float, nullable=False)
+    events: Mapped[list['Event']] = relationship("Event", back_populates="location")
 
 class Event(db.Model):
     __tablename__ = "events"
@@ -42,6 +64,7 @@ class Event(db.Model):
     date: Mapped[Date] = mapped_column(Date)
     time: Mapped[Time] = mapped_column(Time)
     locationId: Mapped[int] = mapped_column(Integer, db.ForeignKey('campus_locations.id'))
+    location: Mapped['CampusLocation'] = relationship("CampusLocation", back_populates="events")
     club_id: Mapped[int] = mapped_column(Integer, db.ForeignKey('clubs.id'))
     club: Mapped['Club'] = relationship("Club", back_populates="events")
     registrations: Mapped[list['Registration']] = relationship("Registration", back_populates="event")
@@ -82,8 +105,11 @@ class Registration(db.Model):
     __tablename__ = "registrations"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    event_id: Mapped[int] = mapped_column(Integer, ForeignKey('events.id'))
     event: Mapped['Event'] = relationship(back_populates='registrations')
-    registered_accounts: Mapped[list[Account]] = relationship(back_populates='registrations')
+
+    account_username: Mapped[str] = mapped_column(String(32), ForeignKey('accounts.username'))
+    registered_accounts: Mapped['Account'] = relationship(back_populates='registrations')
 
 
 club_instances: tuple[Club,...] = (
@@ -101,7 +127,7 @@ club_instances: tuple[Club,...] = (
             Club(club_name="Fencing", org_type=OrgType.CLUB_SPORT_ORGS, advisor_name="Ian Harris", president_name="Rebecca Froyd"),
             Club(club_name="GCC Martial Arts Club", org_type=OrgType.CLUB_SPORT_ORGS, advisor_name="Dr. Jeffrey Buxton", president_name="Wynonna Roberts"),
             Club(club_name="Grove City College Club Ultimate Frisbee", org_type=OrgType.CLUB_SPORT_ORGS, advisor_name="Mr. Isaac Cooke", president_name="James Laird"),
-            Club(club_name="ICE Hockey", org_type=OrgType.CLUB_SPORT_ORGS, advisor_name="Luke Tingley", president_name="Josh Elverson"),
+            Club(club_name="Ice Hockey", org_type=OrgType.CLUB_SPORT_ORGS, advisor_name="Luke Tingley", president_name="Josh Elverson"),
             Club(club_name="Men's Rugby", org_type=OrgType.CLUB_SPORT_ORGS, advisor_name="Dr. Charles Kriley", president_name="Trevor Olson"),                 
 
         )
@@ -110,7 +136,11 @@ db.session.add_all(club_instances)
 
 event_instances: tuple[Event, ...] = (
 
+    #Event(title="", category)
+
 )
+
+
 
 db.session.add_all(event_instances)
 
