@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Enum as SQLEnum
-from sqlalchemy import String, Integer, ForeignKey, CHAR, Float
+from sqlalchemy import String, Integer, ForeignKey, CHAR, Float, Date, Time
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
@@ -34,14 +34,21 @@ class CampusLocation(db.Model):
     longitude: Mapped[float] = mapped_column(Float, nullable=False)
 
 class Event(db.Model):
+    __tablename__ = "events"
+
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(String(128))
     category: Mapped[str] = mapped_column(String(32))
-    date: Mapped[datetime] = mapped_column(datetime)
-    time: Mapped[datetime] = mapped_column(datetime)
+    date: Mapped[Date] = mapped_column(Date)
+    time: Mapped[Time] = mapped_column(Time)
     locationId: Mapped[int] = mapped_column(Integer, db.ForeignKey('campus_locations.id'))
+    club_id: Mapped[int] = mapped_column(Integer, db.ForeignKey('clubs.id'))
+    club: Mapped['Club'] = relationship("Club", back_populates="events")
+    registrations: Mapped[list['Registration']] = relationship("Registration", back_populates="event")
 
 class Club(db.Model):
+    __tablename__ = "clubs"
+
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     club_name: Mapped[str] = mapped_column(String(128))
     abrev: Mapped[str] = mapped_column(String(15), nullable=True)
@@ -49,18 +56,34 @@ class Club(db.Model):
     advisor_name: Mapped[str] = mapped_column(String(32))
     president_name: Mapped[str] = mapped_column(String(32))
     description: Mapped[str] = mapped_column(String(256), nullable=True)
-
+    events: Mapped[list['Event']] = relationship("Event", back_populates="club")
+    favorited: Mapped[list['Favorite']] = relationship("Favorite", back_populates="club")
 
 class Account(db.Model):
+    __tablename__ = "accounts"
+
     username: Mapped[str] = mapped_column(String(32), primary_key=True)
     handle: Mapped[str] = mapped_column(String(15), nullable=True)
     password: Mapped[str] = mapped_column(String(32))
+    favorites: Mapped[list['Favorite']] = relationship("Favorite", back_populates="account")
+    registrations: Mapped[list['Registration']] = relationship("Registration", back_populates="registered_accounts")
 
 class Favorite(db.Model):
-    pass
+    __tablename__ = "favorites"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    account_username: Mapped[str] = mapped_column(String(32), ForeignKey('accounts.username'))
+    club_id: Mapped[int] = mapped_column(Integer, ForeignKey('clubs.id'))
+
+    account: Mapped['Account'] = relationship(back_populates='favorites')
+    club: Mapped['Club'] = relationship(back_populates='favorited')
 
 class Registration(db.Model):
-    pass
+    __tablename__ = "registrations"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    event: Mapped['Event'] = relationship(back_populates='registrations')
+    registered_accounts: Mapped[list[Account]] = relationship(back_populates='registrations')
 
 
 club_instances: tuple[Club,...] = (
