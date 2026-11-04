@@ -48,7 +48,7 @@ class Club(db.Model):
     org_type: Mapped[OrgType] = mapped_column(SQLEnum(OrgType))
     advisor_name: Mapped[str] = mapped_column(String(32))
     president_name: Mapped[str] = mapped_column(String(32))
-    #description: Mapped[str] = mapped_column(String(256))
+    description: Mapped[str] = mapped_column(String(256), nullable=True)
 
 
 class Account(db.Model):
@@ -63,7 +63,7 @@ class Registration(db.Model):
     pass
 
 
-multiple_instances: tuple[Club,...] = (
+club_instances: tuple[Club,...] = (
             Club(club_name="Women for Computer Science", abrev="WFCS", org_type=OrgType.ACADEMIC_PROFESSIONAL_ORGS, advisor_name="Dr. Jonathan Hutchins", president_name="Wynonna Roberts"),
             Club(club_name="Swing Dance Club", org_type=OrgType.ARTS_ORGS, advisor_name="Dr. Erik Bardy", president_name="Sarah Smith"),
             Club(club_name="Turning Point USA at Grove City College", org_type=OrgType.POLY_ORGS, advisor_name="Keith Graybill", president_name="Moira Donovan"),
@@ -71,11 +71,31 @@ multiple_instances: tuple[Club,...] = (
             Club(club_name="Association for Women Students", abrev="AWS", org_type=OrgType.SERVICE_ORGS, advisor_name="Hannah Kincer", president_name="Mary God"),
             Club(club_name="Chess Club", org_type=OrgType.SPECIAL_INTEREST_ORGS, advisor_name="Timothy Sweet", president_name="Quinn MacKenzie"),
             Club(club_name="Outing Club", org_type=OrgType.RECREATION_ORGS, advisor_name="Dr. Devin Stauff", president_name="Connor Stoltzfus"),
-            Club(club_name="Delta Rho Sigma", abrev="Buffaloes", org_type=OrgType.GREEK_LIFE_HOUSING_ORGS, advisor_name="Dr. Kevin Shaw", president_name="Sam Mayfield"),
             Club(club_name="Hymn Sing", org_type=OrgType.MINISTRY_ORGS, advisor_name="Dr. Paul Munson", president_name="June Lee"),
-            Club(club_name="Women's Field Hockey", org_type=OrgType.CLUB_SPORT_ORGS, advisor_name="Mrs. Tori Wright", president_name="Bayleigh Miller")
+            Club(club_name="Women's Field Hockey", org_type=OrgType.CLUB_SPORT_ORGS, advisor_name="Mrs. Tori Wright", president_name="Bayleigh Miller"),
+
+
+            Club(club_name="Fencing", org_type=OrgType.CLUB_SPORT_ORGS, advisor_name="Ian Harris", president_name="Rebecca Froyd"),
+            Club(club_name="GCC Martial Arts Club", org_type=OrgType.CLUB_SPORT_ORGS, advisor_name="Dr. Jeffrey Buxton", president_name="Wynonna Roberts"),
+            Club(club_name="Grove City College Club Ultimate Frisbee", org_type=OrgType.CLUB_SPORT_ORGS, advisor_name="Mr. Isaac Cooke", president_name="James Laird"),
+            Club(club_name="ICE Hockey", org_type=OrgType.CLUB_SPORT_ORGS, advisor_name="Luke Tingley", president_name="Josh Elverson"),
+            Club(club_name="Men's Rugby", org_type=OrgType.CLUB_SPORT_ORGS, advisor_name="Dr. Charles Kriley", president_name="Trevor Olson"),                 
+
         )
 
-db.session.add_all(multiple_instances)
+db.session.add_all(club_instances)
+
+event_instances: tuple[Event, ...] = (
+
+)
+
+db.session.add_all(event_instances)
+
+
+account_instances: tuple[Event, ...] = (
+
+)
+
+db.session.add_all(account_instances)
 
 # when you add the event model, it will likely need a foreign key to campus_locations.id, so each event can reference a building instead of storing its own coordinates
