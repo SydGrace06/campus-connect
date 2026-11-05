@@ -34,6 +34,7 @@ app.config['SECRET_KEY'] = "aardvarkelephantcapybaraantelope"
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{dbfile}"
 
 db.init_app(app)
+
 with app.app_context():
         db.drop_all()
         db.create_all()
@@ -56,11 +57,11 @@ with app.app_context():
 
 
         event_instances: tuple[Event, ...] = (
-            Event(title="Hackathon", category=EventCategory.COMPETITION, date=date(2026, 11, 11), time=time(19, 0), locationid=1, club_id=1),
-            Event(title="Pineapple on Pizza Debate", category=EventCategory.ACADEMIC_PROFESSIONAL, date=date(2026, 11, 3), time=time(18, 26), locationid=2, club_id=5),
-            Event(title="Field Hockey Game", category=EventCategory.COMPETITION, date=date(2026, 11, 7), time=time(8, 30), locationid=3, club_id=4),
-            Event(title="Monster Mash Dance", category=EventCategory.SOCIAL, date=date(2026, 10, 30), time=time(20, 0), locationid=4, club_id=2),
-            Event(title="Hymn Sing Christmas Recital", category=EventCategory.MINISTRY, date=date(2026, 12, 11), time=time(21, 0), locationid=5, club_id=3)
+            Event(title="Hackathon", category=EventCategory.COMPETITION, date=date(2026, 11, 11), time=time(19, 0), locationId=1, club_id=1),
+            Event(title="Pineapple on Pizza Debate", category=EventCategory.ACADEMIC_PROFESSIONAL, date=date(2026, 11, 3), time=time(18, 26), locationId=2, club_id=5),
+            Event(title="Field Hockey Game", category=EventCategory.COMPETITION, date=date(2026, 11, 7), time=time(8, 30), locationId=3, club_id=4),
+            Event(title="Monster Mash Dance", category=EventCategory.SOCIAL, date=date(2026, 10, 30), time=time(20, 0), locationId=4, club_id=2),
+            Event(title="Hymn Sing Christmas Recital", category=EventCategory.MINISTRY, date=date(2026, 12, 11), time=time(21, 0), locationId=5, club_id=3)
         )
 
         db.session.add_all(club_instances)
@@ -75,9 +76,6 @@ dbfile = scriptdir / "users.db"
 
 app.config['SECRET_KEY'] = 'batteryhorsestapler'
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{dbfile}"
-
-# Initialize extensions
-db.init_app(app)
 
 login_manager.init_app(app)
 login_manager.login_view = 'auth.get_login'
