@@ -11,12 +11,18 @@ type EventCategory =
 
 type DateRange = "all" | "today" | "week";
 
+interface CampusLocation {
+    name: string;
+    latitude: number;
+    longitude: number;
+}
+
 interface CampusEvent {
     title: string;
     category: EventCategory;
     date: string;
     time: string;
-    locationId: string;
+    location: CampusLocation;
 }
 
 function getLocalDateString(date: Date): string {
