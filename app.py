@@ -16,6 +16,8 @@ from collections.abc import Sequence
 from pathlib import Path
 from enum import Enum
 
+from flask_login import login_required
+
 from models import db, Club, Event, CampusLocation, OrgType, EventCategory
 # update for our forms:
 # from forms import AuthorForm, BookForm
@@ -65,9 +67,30 @@ with app.app_context():
     
         db.session.commit()
 
+# Application configuration
+scriptdir = Path(__file__).resolve().parent
+dbfile = scriptdir / "users.db"
+
+app.config['SECRET_KEY'] = 'batteryhorsestapler'
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{dbfile}"
+
+# Initialize extensions
+db.init_app(app)
+
+login_manager.init_app(app)
+login_manager.login_view = 'auth.get_login'
+login_manager.session_protection = 'strong'
+
+# Register authentication routes
+from routes.auth import auth
+app.register_blueprint(auth)
+
+# Register event routes
+from routes.events import register_event_routes
 register_event_routes(app)
 
 @app.route("/")
+@login_required
 def home():
     return render_template("index.html")
 
