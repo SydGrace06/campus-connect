@@ -18,11 +18,10 @@ from sqlalchemy.exc import IntegrityError
 
 from forms import RegisterForm, LoginForm
 from extensions import login_manager, db
+
 from models import User
 
 auth = Blueprint('auth', __name__)
-
-scriptdir: Path = Path(__name__).resolve().parent
 
 class UpdatedHasher:
     """Upgrades the Dropbox hasher for modern systems using Argon2 via pwdlib"""

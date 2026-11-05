@@ -44,17 +44,10 @@ app.register_blueprint(auth)
 from routes.events import register_event_routes
 register_event_routes(app)
 
-register_event_routes(app)
-
 @app.route("/")
 @login_required
 def home():
     return render_template("index.html")
-
-from models import User
-
-with app.app_context():
-    db.create_all()
 
 
 if __name__ == "__main__":
