@@ -11,29 +11,45 @@
 <section class="event-filters">
     <h2>Find Events</h2>
 
-    <label for="search">Search events</label>
-    <input
-        type="search"
-        id="search"
-        placeholder="Search by event name..."
-    >
+    <div class="row g-3">
+        <div class="col-12">
+            <label for="search" class="form-label">Search events</label>
+            <input type="search" id="search"
+                   class="form-control"
+                   placeholder="Search by event name...">
+        </div>
 
-    <label for="category">Category</label>
-    <select id="category">
-        <option value="">All categories</option>
-        <option value="Academic">Academic</option>
-        <option value="Social">Social</option>
-        <option value="Music">Music</option>
-        <option value="Clubs">Clubs</option>
-        <option value="Arts">Arts</option>
-    </select>
+        <div class="col-12 col-md-6">
+            <label for="category" class="form-label">Category</label>
+            <select id="category" class="form-select">
+                <option value="">All categories</option>
+                <option value="Academic/Professional">Academic/Professional</option>
+                <option value="Regular">Regular</option>
+                <option value="Social">Social</option>
+                <option value="Service">Service</option>
+                <option value="Fundraising">Fundraising</option>
+                <option value="Competition">Competition</option>
+                <option value="Arts">Arts</option>
+                <option value="Ministry">Ministry</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
 
-    <label for="date-range">When</label>
-    <select id="date-range">
-        <option value="all">All upcoming events</option>
-        <option value="today">Today</option>
-        <option value="week">This week</option>
-    </select>
+        <div class="col-12 col-md-6">
+            <label for="date-range" class="form-label">When</label>
+            <select id="date-range" class="form-select">
+                <option value="all">All upcoming events</option>
+                <option value="today">Today</option>
+                <option value="week">This week</option>
+            </select>
+        </div>
+
+        <div class="col-12">
+            <button type="button" id="clear-filters" class="btn btn-danger">
+                Clear Filters
+            </button>
+        </div>
+    </div>
 </section>
 
 <section class="map-section">
