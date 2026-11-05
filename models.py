@@ -78,6 +78,7 @@ class Account(db.Model):
 
     username: Mapped[str] = mapped_column(String(32), primary_key=True)
     handle: Mapped[str] = mapped_column(String(15), nullable=True)
+    email: Mapped[str] = mapped_column(String(32))
     password: Mapped[str] = mapped_column(String(32))
     favorites: Mapped[list['Favorite']] = relationship("Favorite", back_populates="account")
     registrations: Mapped[list['Registration']] = relationship("Registration", back_populates="registered_accounts")
