@@ -1,8 +1,8 @@
 "use strict";
 /// <reference types="leaflet" />
 /// <reference path="./filters.ts" />
-// Grove City College location directory.
-// Coordinates are approximate demo positions; verify before final use.
+// Grove City College location directory
+// Coordinates are approximate demo positions
 const campusLocations = {
     "breen-student-union": {
         name: "Breen Student Union (STU)",
@@ -35,18 +35,18 @@ const campusLocations = {
         "longitude": -80.080569
     }
 };
-// Dummy events point to a location ID rather than storing coordinates.
+// Dummy events point to a location ID rather than storing coordinates
 const dummyEvents = [
     {
         title: "Coding Club Meetup",
-        category: "Academic",
+        category: "Academic/Professional",
         date: "2026-11-02",
         time: "6:00 PM",
         locationId: "breen-student-union"
     },
     {
         title: "Study Group",
-        category: "Academic",
+        category: "Academic/Professional",
         date: "2026-11-03",
         time: "4:00 PM",
         locationId: "buhl-library"
@@ -59,15 +59,15 @@ const dummyEvents = [
         locationId: "map-north"
     },
     {
-        title: "Campus Music Meetup",
-        category: "Music",
+        title: "Campus Ministry Fair",
+        category: "Ministry",
         date: "2026-11-05",
         time: "5:30 PM",
         locationId: "hicks-hall"
     },
     {
         title: "Student Club Planning",
-        category: "Clubs",
+        category: "Regular",
         date: "2026-11-06",
         time: "6:30 PM",
         locationId: "ketler-hall"
@@ -96,7 +96,7 @@ const dummyEvents = [
 ];
 const mapElement = document.getElementById("map");
 if (mapElement) {
-    // Center the map around Grove City College.
+    // Center the map around Grove City College
     const map = L.map(mapElement).setView([41.155353, -80.079024], 17);
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
@@ -113,9 +113,9 @@ if (mapElement) {
             return;
         }
         const filteredEvents = filterEvents(dummyEvents, searchInput.value, categoryInput.value, dateInput.value);
-        // Remove the old markers.
+        // Remove the old markers
         markerLayer.clearLayers();
-        // Add markers for the filtered events.
+        // Add markers for the filtered events
         filteredEvents.forEach((event) => {
             const location = campusLocations[event.locationId];
             if (!location) {
@@ -130,10 +130,19 @@ if (mapElement) {
                 `Location: ${location.name}`);
         });
     }
-    // Update markers when the user changes a filter.
+    // Update markers when the user changes a filter
     document.getElementById("search")?.addEventListener("input", updateMapMarkers);
     document.getElementById("category")?.addEventListener("change", updateMapMarkers);
     document.getElementById("date-range")?.addEventListener("change", updateMapMarkers);
-    // Display all events when the page first loads.
+    document.getElementById("clear-filters")?.addEventListener("click", () => {
+        const searchInput = document.getElementById("search");
+        const categoryInput = document.getElementById("category");
+        const dateInput = document.getElementById("date-range");
+        searchInput.value = "";
+        categoryInput.value = "";
+        dateInput.value = "all";
+        updateMapMarkers();
+    });
+    // Display all events when the page first loads
     updateMapMarkers();
 }
