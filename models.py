@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 #from pathlib import Path
-from datetime import date, time
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy import String, Integer, ForeignKey, CHAR, Float, Date, Time
