@@ -2,13 +2,14 @@ from __future__ import annotations
 
 #from pathlib import Path
 from flask_sqlalchemy import SQLAlchemy
+from enum import Enum
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy import String, Integer, ForeignKey, CHAR, Float, Date, Time
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
 
-class OrgType(SQLEnum):
+class OrgType(Enum):
     ACADEMIC_PROFESSIONAL_ORGS  = 'Academic/Professional'
     ARTS_ORGS                   = 'Arts'
     POLY_ORGS                   = 'Political'
@@ -23,7 +24,7 @@ class OrgType(SQLEnum):
     IM_SPORT_ORGS               = 'IM Sports'
     CLUB_SPORT_ORGS             = 'Club Sports'
 
-class EventCategory(SQLEnum):
+class EventCategory(Enum):
     ACADEMIC_PROFESSIONAL  = 'Academic/Professional'
     REGULAR                = 'Regular'
     SOCIAL                 = 'Social'
