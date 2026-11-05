@@ -1,8 +1,8 @@
 /// <reference types="leaflet" />
 /// <reference path="./filters.ts" />
 
-// Grove City College location directory.
-// Coordinates are approximate demo positions; verify before final use.
+// Grove City College location directory
+// Coordinates are approximate demo positions
 const campusLocations = {
     "breen-student-union": {
         name: "Breen Student Union (STU)",
@@ -36,18 +36,18 @@ const campusLocations = {
     }
 };
 
-// Dummy events point to a location ID rather than storing coordinates.
+// Dummy events point to a location ID rather than storing coordinates
 const dummyEvents: CampusEvent[] = [
     {
         title: "Coding Club Meetup",
-        category: "Academic",
+        category: "Academic/Professional",
         date: "2026-11-02",
         time: "6:00 PM",
         locationId: "breen-student-union"
     },
     {
         title: "Study Group",
-        category: "Academic",
+        category: "Academic/Professional",
         date: "2026-11-03",
         time: "4:00 PM",
         locationId: "buhl-library"
@@ -60,15 +60,15 @@ const dummyEvents: CampusEvent[] = [
         locationId: "map-north"
     },
     {
-        title: "Campus Music Meetup",
-        category: "Music",
+        title: "Campus Ministry Fair",
+        category: "Ministry",
         date: "2026-11-05",
         time: "5:30 PM",
         locationId: "hicks-hall"
     },
     {
         title: "Student Club Planning",
-        category: "Clubs",
+        category: "Regular",
         date: "2026-11-06",
         time: "6:30 PM",
         locationId: "ketler-hall"
@@ -99,7 +99,7 @@ const dummyEvents: CampusEvent[] = [
 const mapElement = document.getElementById("map");
 
 if (mapElement) {
-    // Center the map around Grove City College.
+    // Center the map around Grove City College
     const map = L.map(mapElement).setView(
         [41.155353, -80.079024], 17
     );
@@ -115,14 +115,11 @@ if (mapElement) {
     const markerLayer = L.layerGroup().addTo(map);
 
     function updateMapMarkers(): void {
-        const searchInput =
-            document.getElementById("search") as HTMLInputElement | null;
+        const searchInput = document.getElementById("search") as HTMLInputElement | null;
 
-        const categoryInput =
-            document.getElementById("category") as HTMLSelectElement | null;
+        const categoryInput = document.getElementById("category") as HTMLSelectElement | null;
 
-        const dateInput =
-            document.getElementById("date-range") as HTMLSelectElement | null;
+        const dateInput = document.getElementById("date-range") as HTMLSelectElement | null;
 
         if (!searchInput || !categoryInput || !dateInput) {
             console.error("One or more filter controls are missing.");
@@ -136,10 +133,10 @@ if (mapElement) {
             dateInput.value as DateRange
         );
 
-        // Remove the old markers.
+        // Remove the old markers
         markerLayer.clearLayers();
 
-        // Add markers for the filtered events.
+        // Add markers for the filtered events
         filteredEvents.forEach((event) => {
             const location =
                 campusLocations[
@@ -162,7 +159,7 @@ if (mapElement) {
         });
     }
 
-    // Update markers when the user changes a filter.
+    // Update markers when the user changes a filter
     document.getElementById("search")?.addEventListener(
         "input",
         updateMapMarkers
@@ -178,6 +175,23 @@ if (mapElement) {
         updateMapMarkers
     );
 
-    // Display all events when the page first loads.
+    document.getElementById("clear-filters")?.addEventListener("click", () => {
+        const searchInput =
+            document.getElementById("search") as HTMLInputElement;
+
+        const categoryInput =
+            document.getElementById("category") as HTMLSelectElement;
+
+        const dateInput =
+            document.getElementById("date-range") as HTMLSelectElement;
+
+        searchInput.value = "";
+        categoryInput.value = "";
+        dateInput.value = "all";
+
+        updateMapMarkers();
+    });
+
+    // Display all events when the page first loads
     updateMapMarkers();
 }

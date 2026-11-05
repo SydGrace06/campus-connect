@@ -1,11 +1,13 @@
 type EventCategory =
-    | "Academic"
+    | "Academic/Professional"
+    | "Regular"
     | "Social"
-    | "Music"
-    | "Clubs"
+    | "Service"
+    | "Fundraising"
+    | "Competition"
     | "Arts"
-    | "Career"
-    | "Sports";
+    | "Ministry"
+    | "Other";
 
 type DateRange = "all" | "today" | "week";
 
