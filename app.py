@@ -92,15 +92,17 @@ register_event_routes(app)
 @app.route("/")
 @login_required
 def home():
-    return render_template("index.html")
+    query: Select[tuple[Event]] = db.select(Event)
+    events: Sequence[Event] = db.session.scalars(query).all()
+    return render_template("index.html", events=events)
 
 #@app.route('/api/events')
 
-@app.get('/events/')
-def get_events():
-     query: Select[tuple[Event]] = db.select(Event)
-     events: Sequence[Event] = db.session.scalars(query).all()
-     return render_template('events.html', events=events)
+#@app.get('/events/')
+#def get_events():
+#     query: Select[tuple[Event]] = db.select(Event)
+#     events: Sequence[Event] = db.session.scalars(query).all()
+#     return render_template('events.html', events=events)
 
 
 if __name__ == "__main__":

@@ -59,6 +59,35 @@
 
 <section id="event-list" class="event-list">
     <h2>Upcoming Events</h2>
-    <p>Events will appear here as we connect the database.</p>
+    <table class="table table-striped table-bordered">
+    <thead>
+    <tr>
+    <th>Title</th>
+    <th>Category</th>
+    <th>Date</th>
+    <th>Time</th>
+    <th>Location</th>
+    <th>Club</th>    
+    </tr>
+    </thead>
+    <tbody>
+    {% if not events %}
+      <tr class="text-center">
+      <td colspan="6">No events available.</td>
+      </tr>
+    {% else %}
+        {% for event in events %}
+        <tr>
+          <td>{{ event.title }}</td>
+          <td>{{ event.category }}</td>
+          <td>{{ event.date }}</td>
+          <td>{{ event.time }}</td>
+          <td>{{ event.locationId }}</td>
+          <td>{{ event.club_id }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        </tbody>
+        </table>
 </section>
 {% endblock %}
