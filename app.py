@@ -17,9 +17,9 @@ from pathlib import Path
 from enum import Enum
 
 from flask_login import login_required
-from extensions import login_manager
+from extensions import login_manager, db
 
-from models import db, Club, Event, CampusLocation, OrgType, EventCategory
+from models import Club, Event, CampusLocation, OrgType, EventCategory
 # update for our forms:
 # from forms import AuthorForm, BookForm
 # from models import db, Author, Book

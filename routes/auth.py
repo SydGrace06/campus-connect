@@ -64,14 +64,16 @@ pwd_hasher = UpdatedHasher(pepper_key)
 # function that takes a user id and as a string and returns that user
 @login_manager.user_loader
 def load_user(uid: str) -> Account|None:
-    return get_user(uid=int(uid))
+    return get_user(uid=uid)
 
 # define a helper function that loads uses based on id or email
-def get_user(uid: int|None = None, email: str|None = None) -> Account|None:
+def get_user(uid: str|None = None, email: str|None = None) -> Account|None:
     if uid is not None:
         return db.session.get(Account, uid)
-    else:
+    if email is not None:
         return db.session.scalar(db.select(Account).filter_by(email=email))
+
+    return None
 
 ###############################################################################
 # Route Handlers
@@ -85,27 +87,28 @@ def get_register():
 @auth.post('/register/')
 def post_register():
     form = RegisterForm()
-    if form.validate():
+
+    if form.validate_on_submit():
         try:
-            # load the email and password from the form
-            email: str = cast(str, form.email.data)
-            password: str = cast(str, form.password.data)
-            user = Account(email=email, password=password) # type:ignore
+            username = cast(str, form.username.data)
+            email = cast(str, form.email.data)
+            password = cast(str, form.password.data)
+            user = Account(
+                username=username,
+                email=email,
+                pwd_hasher=pwd_hasher.hash(password)
+            )
             db.session.add(user)
             db.session.commit()
-            return redirect(url_for('get_login'))
-        except IntegrityError:
-            flash('There is already an account with that email address')
-            # blank out the password in the form before re-rendering it
-            form.password.data = ""
-            form.confirm_password.data = ""
-            return render_template('register.html', form=form), 422
-    # if the form was invalid . . .
-    # flash error messages and redirect to get registration form again
+            flash('Account successfully created!')
+            return redirect(url_for('auth.get_login'))
+        except IntegrityError as error:
+            db.session.rollback()
+            print("Registration database error:", error)
+            flash('That username or email is already in use.')
     for field, errors in form.errors.items():
         for msg in errors:
             flash(f"{field}: {msg}")
-    # blank out the password in the form before re-rendering it
     form.password.data = ""
     form.confirm_password.data = ""
     return render_template('register.html', form=form), 422
@@ -122,7 +125,7 @@ def post_login():
         # try to get the user associated with this email address
         user: Account|None = get_user(email=form.email.data)
         # if this user exists and the password matches
-        if user is not None and user.verify_password(str(form.password.data)):
+        if user is not None and pwd_hasher.check(str(form.password.data), user.pwd_hasher):
             # log this user in through the login_manager
             login_user(user)
             # redirect the user to the page they wanted or the home page
@@ -155,4 +158,4 @@ def index():
 def get_logout():
     logout_user()
     flash('You have been logged out')
-    return redirect(url_for('index'))
+    return redirect(url_for('home'))

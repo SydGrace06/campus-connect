@@ -4,10 +4,10 @@ from __future__ import annotations
 from flask_sqlalchemy import SQLAlchemy
 from enum import Enum
 from sqlalchemy import Enum as SQLEnum
-from sqlalchemy import String, Integer, ForeignKey, CHAR, Float, Date, Time
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-db = SQLAlchemy()
+from sqlalchemy import String, Integer, ForeignKey, CHAR, Float, Date, Time, VARBINARY
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
+from extensions import db
+from flask_login import UserMixin
 
 class OrgType(Enum):
     ACADEMIC_PROFESSIONAL_ORGS  = 'Academic/Professional'
@@ -73,15 +73,27 @@ class Club(db.Model):
     events: Mapped[list['Event']] = relationship("Event", back_populates="club")
     favorited: Mapped[list['Favorite']] = relationship("Favorite", back_populates="club")
 
-class Account(db.Model):
+class Account(UserMixin, db.Model):
     __tablename__ = "accounts"
 
     username: Mapped[str] = mapped_column(String(32), primary_key=True)
     handle: Mapped[str] = mapped_column(String(15), nullable=True)
     email: Mapped[str] = mapped_column(String(128))
-    password: Mapped[str] = mapped_column(String(32))
+    pwd_hasher: Mapped[bytes] = mapped_column(VARBINARY(255), nullable=False)
     favorites: Mapped[list['Favorite']] = relationship("Favorite", back_populates="account")
     registrations: Mapped[list['Registration']] = relationship("Registration", back_populates="registered_accounts")
+
+
+    def get_id(self):
+        return self.username
+
+        # make sure that emails are all lowercase
+    @validates('email')
+    def validate_email(self, key: str, email: str) -> str:
+        if email:
+            return email.strip().lower()
+        return email
+    
 
 class Favorite(db.Model):
     __tablename__ = "favorites"
