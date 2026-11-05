@@ -19,7 +19,7 @@ from sqlalchemy.exc import IntegrityError
 from forms import RegisterForm, LoginForm
 from extensions import login_manager, db
 
-from models import User
+from models import Account
 
 auth = Blueprint('auth', __name__)
 
@@ -50,28 +50,28 @@ class UpdatedHasher:
     @staticmethod
     def random_pepper() -> bytes:
         return Fernet.generate_key()
+    
 
+scriptdir: Path = Path(__file__).resolve().parent.parent
 
-dbfile:  Path = scriptdir / "users.db"
 pepfile: Path = scriptdir / "pepper.bin"
 
-#Load in the pepper and give it to the Hasher function
 with open(pepfile, 'rb') as fin:
-  pepper_key = fin.read()
+    pepper_key = fin.read()
 
 pwd_hasher = UpdatedHasher(pepper_key)
 
 # function that takes a user id and as a string and returns that user
 @login_manager.user_loader
-def load_user(uid: str) -> User|None:
+def load_user(uid: str) -> Account|None:
     return get_user(uid=int(uid))
 
 # define a helper function that loads uses based on id or email
-def get_user(uid: int|None = None, email: str|None = None) -> User|None:
+def get_user(uid: int|None = None, email: str|None = None) -> Account|None:
     if uid is not None:
-        return db.session.get(User, uid)
+        return db.session.get(Account, uid)
     else:
-        return db.session.scalar(db.select(User).filter_by(email=email))
+        return db.session.scalar(db.select(Account).filter_by(email=email))
 
 ###############################################################################
 # Route Handlers
@@ -90,7 +90,7 @@ def post_register():
             # load the email and password from the form
             email: str = cast(str, form.email.data)
             password: str = cast(str, form.password.data)
-            user = User(email=email, password=password) # type:ignore
+            user = Account(email=email, password=password) # type:ignore
             db.session.add(user)
             db.session.commit()
             return redirect(url_for('get_login'))
@@ -120,7 +120,7 @@ def post_login():
     form = LoginForm()
     if form.validate():
         # try to get the user associated with this email address
-        user: User|None = get_user(email=form.email.data)
+        user: Account|None = get_user(email=form.email.data)
         # if this user exists and the password matches
         if user is not None and user.verify_password(str(form.password.data)):
             # log this user in through the login_manager
@@ -146,8 +146,9 @@ def post_login():
     return render_template('login.html', form=form), 422
 
 @auth.get('/')
+@login_required
 def index():
-    return render_template('home.html')
+    return render_template('index.html')
 
 @auth.get('/logout/')
 @login_required

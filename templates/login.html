@@ -20,7 +20,7 @@
                 {{ form.password(class="form-control", type="password") }}
             </div>
             <div class="form-group">
-                <a href="{{ url_for('register') }}" class="btn btn-link">Register</a>
+                <a href="{{ url_for('auth.get_register') }}" class="btn btn-link">Register</a>
             </div>
             <div class="form-group">
                 {{ form.submit(class="btn btn-primary") }}
