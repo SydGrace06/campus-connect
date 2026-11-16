@@ -20,6 +20,8 @@ from flask_login import login_required
 from extensions import login_manager, db
 
 from models import Club, Event, CampusLocation, OrgType, EventCategory
+from seed_locations import CAMPUS_LOCATIONS
+from seed_clubs import CAMPUS_CLUBS
 # update for our forms:
 # from forms import AuthorForm, BookForm
 # from models import db, Author, Book
@@ -39,29 +41,34 @@ with app.app_context():
         db.drop_all()
         db.create_all()
 
-        club_instances: tuple[Club,...] = (
-            Club(club_name="Women for Computer Science", abrev="WFCS", org_type=OrgType.ACADEMIC_PROFESSIONAL_ORGS, advisor_name="Dr. Jonathan Hutchins", president_name="Wynonna Roberts"),
-            Club(club_name="Swing Dance Club", org_type=OrgType.ARTS_ORGS, advisor_name="Dr. Erik Bardy", president_name="Sarah Smith"),
-            Club(club_name="Hymn Sing Club", org_type=OrgType.MINISTRY_ORGS, advisor_name="Dr. Paul Munson", president_name="June Lee"),
-            Club(club_name="Women's Field Hockey", org_type=OrgType.CLUB_SPORT_ORGS, advisor_name="Mrs. Tori Wright", president_name="Bayleigh Miller"),
-            Club(club_name="Speech and Debate Team", org_type=OrgType.ACADEMIC_PROFESSIONAL_ORGS, advisor_name="Dr. Jason Edwards", president_name="Ginger Schiffmayer")
-        )
+        club_instances: list[Club] = []
 
-        location_instances: tuple[CampusLocation, ...] = (
-            CampusLocation(name="STEM", latitude=41.15555889321571, longitude=-80.07897482206347),
-            CampusLocation(name="PEW", latitude=41.15274167584597, longitude=-80.07720453780321),
-            CampusLocation(name="Football Field", latitude=41.15705213768561, longitude=-80.08466176556155),
-            CampusLocation(name="HAL Courtyard", latitude=41.15489320642377, longitude=-80.0777023538951),
-            CampusLocation(name="Harbison Chapel", latitude=41.156951476703156, longitude=-80.08060175968447)
-        )
+        for club in CAMPUS_CLUBS:
+            new_club: Club = Club(
+                club_name=club["club_name"],
+                abrev=club.get("abrev"),
+                org_type=club["org_type"],
+                advisor_name=club["advisor_name"],
+                president_name=club["president_name"],
+                description=club.get("description")
+            )
 
+        location_instances: list[CampusLocation] = []
+
+        for location in CAMPUS_LOCATIONS:
+            new_location: CampusLocation = CampusLocation(
+                name=location["name"],
+                latitude=location["latitude"],
+                longitude=location["longitude"]
+            )
+            location_instances.append(new_location)
 
         event_instances: tuple[Event, ...] = (
-            Event(title="Hackathon", category=EventCategory.COMPETITION, date=date(2026, 11, 11), time=time(19, 0), locationId=1, club_id=1),
-            Event(title="Pineapple on Pizza Debate", category=EventCategory.ACADEMIC_PROFESSIONAL, date=date(2026, 11, 3), time=time(18, 26), locationId=2, club_id=5),
-            Event(title="Field Hockey Game", category=EventCategory.COMPETITION, date=date(2026, 11, 7), time=time(8, 30), locationId=3, club_id=4),
-            Event(title="Monster Mash Dance", category=EventCategory.SOCIAL, date=date(2026, 10, 30), time=time(20, 0), locationId=4, club_id=2),
-            Event(title="Hymn Sing Christmas Recital", category=EventCategory.MINISTRY, date=date(2026, 12, 11), time=time(21, 0), locationId=5, club_id=3)
+            Event(title="Hackathon", category=EventCategory.COMPETITION, date=date(2026, 11, 11), time=time(19, 0), locationId=29, club_id=29),
+            Event(title="Pineapple on Pizza Debate", category=EventCategory.ACADEMIC_PROFESSIONAL, date=date(2026, 11, 3), time=time(18, 26), locationId=10, club_id=27),
+            Event(title="Field Hockey Game", category=EventCategory.COMPETITION, date=date(2026, 11, 7), time=time(8, 30), locationId=30, club_id=99),
+            Event(title="Monster Mash Dance", category=EventCategory.SOCIAL, date=date(2026, 10, 30), time=time(20, 0), locationId=1, club_id=36),
+            Event(title="Hymn Sing Christmas Recital", category=EventCategory.MINISTRY, date=date(2026, 12, 11), time=time(21, 0), locationId=2, club_id=77)
         )
 
         db.session.add_all(club_instances)

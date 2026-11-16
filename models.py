@@ -69,7 +69,7 @@ class Club(db.Model):
     org_type: Mapped[OrgType] = mapped_column(SQLEnum(OrgType))
     advisor_name: Mapped[str] = mapped_column(String(32))
     president_name: Mapped[str] = mapped_column(String(32))
-    description: Mapped[str] = mapped_column(String(256), nullable=True)
+    description: Mapped[str] = mapped_column(String(1026), nullable=True)
     events: Mapped[list['Event']] = relationship("Event", back_populates="club")
     favorited: Mapped[list['Favorite']] = relationship("Favorite", back_populates="club")
 
