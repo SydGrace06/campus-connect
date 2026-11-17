@@ -1021,7 +1021,7 @@ CAMPUS_CLUBS = [
         #88
         "club_name": "Simple Charity",
         "org_type": OrgType.MINISTRY_ORGS,
-        "advisor_name": "Thomas Biro",
+        "advisor_name": "Mr. Thomas Biro",
         "president_name": "Carolyn Stum",
         "description": "The mission of Simple Charity is to help students grow in loving and serving "
         "those in need through studying Jesus' love together and then applying it to our lives through local "

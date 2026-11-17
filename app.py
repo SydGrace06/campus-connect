@@ -22,6 +22,7 @@ from extensions import login_manager, db
 from models import Club, Event, CampusLocation, OrgType, EventCategory
 from seed_locations import CAMPUS_LOCATIONS
 from seed_clubs import CAMPUS_CLUBS
+from seed_events import CAMPUS_EVENTS
 # update for our forms:
 # from forms import AuthorForm, BookForm
 # from models import db, Author, Book
@@ -38,38 +39,48 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{dbfile}"
 db.init_app(app)
 
 with app.app_context():
-        db.drop_all()
+        
+        #db.drop_all()
         db.create_all()
-
+        
         club_instances: list[Club] = []
-
-        for club in CAMPUS_CLUBS:
-            new_club: Club = Club(
-                club_name=club["club_name"],
-                abrev=club.get("abrev"),
-                org_type=club["org_type"],
-                advisor_name=club["advisor_name"],
-                president_name=club["president_name"],
-                description=club.get("description")
-            )
-
         location_instances: list[CampusLocation] = []
+        event_instances: list[Event] = []
 
-        for location in CAMPUS_LOCATIONS:
-            new_location: CampusLocation = CampusLocation(
-                name=location["name"],
-                latitude=location["latitude"],
-                longitude=location["longitude"]
-            )
-            location_instances.append(new_location)
+        if Club.query.count() == 0:
+            
+            for club in CAMPUS_CLUBS:
+                new_club: Club = Club(
+                    club_name=club["club_name"],
+                    abrev=club.get("abrev"),
+                    org_type=club["org_type"],
+                    advisor_name=club["advisor_name"],
+                    president_name=club["president_name"],
+                    description=club.get("description")
+                )
+                club_instances.append(new_club)
 
-        event_instances: tuple[Event, ...] = (
-            Event(title="Hackathon", category=EventCategory.COMPETITION, date=date(2026, 11, 11), time=time(19, 0), locationId=29, club_id=29),
-            Event(title="Pineapple on Pizza Debate", category=EventCategory.ACADEMIC_PROFESSIONAL, date=date(2026, 11, 3), time=time(18, 26), locationId=10, club_id=27),
-            Event(title="Field Hockey Game", category=EventCategory.COMPETITION, date=date(2026, 11, 7), time=time(8, 30), locationId=30, club_id=99),
-            Event(title="Monster Mash Dance", category=EventCategory.SOCIAL, date=date(2026, 10, 30), time=time(20, 0), locationId=1, club_id=36),
-            Event(title="Hymn Sing Christmas Recital", category=EventCategory.MINISTRY, date=date(2026, 12, 11), time=time(21, 0), locationId=2, club_id=77)
-        )
+        if CampusLocation.query.count() == 0:
+            
+            for location in CAMPUS_LOCATIONS:
+                new_location: CampusLocation = CampusLocation(
+                    name=location["name"],
+                    latitude=location["latitude"],
+                    longitude=location["longitude"]
+                )
+                location_instances.append(new_location)
+
+        if Event.query.count() == 0:
+            for event in CAMPUS_EVENTS:
+                new_event: Event = Event(
+                    title=event["title"],
+                    category=event["category"],
+                    date=event["date"],
+                    time=event["time"],
+                    locationId=event["locationId"],
+                    club_id=event["club_id"]
+                )
+                event_instances.append(new_event)
 
         db.session.add_all(club_instances)
         db.session.add_all(location_instances)
