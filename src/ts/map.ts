@@ -64,6 +64,32 @@ if (mapElement) {
                 row.appendChild(cell);
             });
 
+            // Create the Actions column
+            const actionsCell = document.createElement("td");
+
+            // Favorite club button
+            const favoriteButton = document.createElement("button");
+            favoriteButton.type = "button";
+            favoriteButton.textContent = " ☆ ";
+            favoriteButton.className = "btn btn-outline-primary btn-sm";
+
+            // Disable favorite if the event has no club
+            if (!event.club) {
+                favoriteButton.disabled = true;
+                favoriteButton.title = "This event has no associated club";
+            }
+
+            // RSVP button
+            const rsvpButton = document.createElement("button");
+            rsvpButton.type = "button";
+            rsvpButton.textContent = "RSVP";
+            rsvpButton.className = "btn btn-outline-success btn-sm";
+
+            actionsCell.appendChild(favoriteButton);
+            actionsCell.appendChild(document.createTextNode(" "));
+            actionsCell.appendChild(rsvpButton);
+
+            row.appendChild(actionsCell);
             tableBody.appendChild(row);
         });
     }
@@ -82,7 +108,7 @@ if (mapElement) {
         );
 
         updateEventTable(filteredEvents);
-        
+
         // Remove the old markers
         markerLayer.clearLayers();
 
