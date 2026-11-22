@@ -15,6 +15,7 @@ def register_event_routes(app):
 
         for event, location in results:
             events.append({
+                "id": event.id,
                 "title": event.title,
                 "category": event.category.value,
                 "date": event.date.isoformat(),

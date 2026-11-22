@@ -18,6 +18,7 @@ interface CampusLocation {
 }
 
 interface CampusEvent {
+    id: number;
     title: string;
     category: EventCategory;
     date: string;
