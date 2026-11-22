@@ -18,11 +18,13 @@ interface CampusLocation {
 }
 
 interface CampusEvent {
+    id?: number;
     title: string;
     category: EventCategory;
     date: string;
     time: string;
     location: CampusLocation;
+    club?: string | null;
 }
 
 function getLocalDateString(date: Date): string {
