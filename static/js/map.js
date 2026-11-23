@@ -53,7 +53,7 @@ if (mapElement) {
             // Favorite club button
             const favoriteButton = document.createElement("button");
             favoriteButton.type = "button";
-            favoriteButton.textContent = "☆ Favorite Club";
+            favoriteButton.textContent = " ☆ ";
             favoriteButton.className = "btn btn-outline-primary btn-sm";
             // Disable favorite if the event has no club
             if (!event.club) {

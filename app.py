@@ -96,14 +96,16 @@ def home():
     events: Sequence[Event] = db.session.scalars(query).all()
     return render_template("index.html", events=events)
 
-#@app.route('/api/events')
+@app.get("/favorites")
+@login_required
+def favorites_page():
+    return render_template("favorites.html")
 
-#@app.get('/events/')
-#def get_events():
-#     query: Select[tuple[Event]] = db.select(Event)
-#     events: Sequence[Event] = db.session.scalars(query).all()
-#     return render_template('events.html', events=events)
 
+@app.get("/my-rsvps")
+@login_required
+def my_rsvps_page():
+    return render_template("rsvp.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
